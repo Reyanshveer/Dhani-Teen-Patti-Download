@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Deck Studio | Retro 90s Arcade & Digital Card Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Press Start 2P -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        arcade: {
+                            bg: '#080204',
+                            panel: '#120408',
+                            border: '#330814',
+                            red: '#ff1744',
+                            brightRed: '#ff2a55',
+                            darkRed: '#88001b',
+                            neonPink: '#ff0055',
+                            gold: '#ffd700',
+                            cyan: '#00f0ff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        arcade: ['"Press Start 2P"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Keyframe Animations for 90s Motion */
+        @keyframes scanlineMove {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(255, 23, 68, 0.4), inset 0 0 5px rgba(255, 23, 68, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(255, 23, 68, 0.9), 0 0 35px rgba(255, 0, 85, 0.6), inset 0 0 12px rgba(255, 0, 85, 0.4); }
+            100% { box-shadow: 0 0 10px rgba(255, 23, 68, 0.4), inset 0 0 5px rgba(255, 23, 68, 0.2); }
+        }
+
+        @keyframes pixelFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(3deg); }
+        }
+
+        @keyframes pixelBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @keyframes arcadeBlink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        @keyframes screenShake {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(3px, -2px); }
+            60% { transform: translate(-2px, -3px); }
+            80% { transform: translate(2px, 2px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Glassmorphic & Arcade Panel Styling */
+        body {
+            background-color: #080204;
+            color: #f1f1f1;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .screen-shake {
+            animation: screenShake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        .glass-panel {
+            background: rgba(18, 4, 8, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 23, 68, 0.25);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .glass-panel-hover:hover {
+            border-color: rgba(255, 42, 85, 0.7);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 45px rgba(255, 23, 68, 0.35);
+        }
+
+        /* CRT Raster & Glitch Scanline Overlay */
+        .crt-active::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+            z-index: 999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+            opacity: 0.75;
+        }
+
+        .crt-active::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: rgba(255, 42, 85, 0.3);
+            opacity: 0.6;
+            z-index: 1000;
+            pointer-events: none;
+            animation: scanlineMove 8s linear infinite;
+        }
+
+        /* 90s Arcade Buttons */
+        .arcade-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 22px;
+            background: #ff1744;
+            color: #ffffff;
+            border: none;
+            box-shadow: inset -4px -4px 0px 0px #88001b, inset 4px 4px 0px 0px #ff6685, 0 6px 20px rgba(255,23,68,0.6);
+            transition: all 0.12s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arcade-btn:hover {
+            background: #ff2a55;
+            box-shadow: inset -4px -4px 0px 0px #88001b, inset 4px 4px 0px 0px #ffffff, 0 8px 25px rgba(255,42,85,0.8);
+            transform: translateY(-2px);
+        }
+
+        .arcade-btn:active {
+            box-shadow: inset 4px 4px 0px 0px #88001b, inset -4px -4px 0px 0px #ff6685;
+            transform: translateY(3px);
+        }
+
+        /* Sprite motion classes */
+        .animate-float {
+            animation: pixelFloat 4s ease-in-out infinite;
+        }
+        .animate-pixel-bounce {
+            animation: pixelBounce 1.2s ease-in-out infinite;
+        }
+        .animate-arcade-blink {
+            animation: arcadeBlink 0.9s infinite;
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 2.5s infinite alternate;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080204;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #330814;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff1744;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-arcade-red selection:text-white crt-active">
+
+    <!-- Canvas for 90s Cyber Grid / Particle Explosion Dynamic Engine -->
+    <canvas id="arcadeCanvas" class="fixed inset-0 pointer-events-none z-0 opacity-50"></canvas>
+
+    <!-- TOP HEADER & RETRO HUD BAR -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-arcade-border px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchPage('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-arcade-red via-arcade-darkRed to-black flex items-center justify-center border border-arcade-brightRed shadow-lg shadow-arcade-red/40 animate-pulse-glow group-hover:rotate-12 transition duration-300">
+                    <span class="font-arcade text-white text-lg">♠</span>
+                </div>
+                <div>
+                    <span class="font-arcade text-xs md:text-sm text-arcade-brightRed drop-shadow-[0_0_10px_rgba(255,23,68,0.9)]">APEX DECK</span>
+                    <span class="text-[10px] text-gray-400 block font-sans tracking-widest uppercase font-semibold">Studio v2.0 • 90s Engine</span>
+                </div>
+            </div>
+
+            <!-- Arcade Score / HUD Stats Widget -->
+            <div class="hidden lg:flex items-center space-x-6 bg-black/70 px-5 py-2 rounded-full border border-arcade-border text-xs font-arcade text-gray-300">
+                <div class="flex items-center space-x-2">
+                    <span class="text-arcade-gold"><i class="fa-solid fa-trophy"></i> HI-SCORE:</span>
+                    <span id="hudScore" class="text-white">128950</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-arcade-brightRed"><i class="fa-solid fa-fire animate-pixel-bounce"></i> COMBO:</span>
+                    <span id="hudCombo" class="text-white">x5</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-arcade-cyan"><i class="fa-solid fa-coins"></i> CREDITS:</span>
+                    <span id="hudCredits" class="text-white">99</span>
+                </div>
+            </div>
+
+            <!-- Sound & CRT Controls -->
+            <div class="flex items-center space-x-3">
+                <button id="sfxBtn" onclick="toggleSFX()" class="px-3.5 py-1.5 rounded-lg bg-black/60 border border-arcade-border text-xs text-gray-300 hover:text-arcade-brightRed transition flex items-center space-x-2">
+                    <i id="sfxIcon" class="fa-solid fa-volume-high text-arcade-brightRed"></i>
+                    <span class="hidden sm:inline font-mono">SFX ON</span>
+                </button>
+                <button onclick="toggleCRT()" class="px-3.5 py-1.5 rounded-lg bg-black/60 border border-arcade-border text-xs text-gray-300 hover:text-arcade-brightRed transition flex items-center space-x-2">
+                    <i class="fa-solid fa-tv text-arcade-cyan"></i>
+                    <span class="hidden sm:inline font-mono">90s CRT</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button onclick="toggleMobileNav()" class="md:hidden text-gray-300 hover:text-white p-2">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Desktop Navigation Tabs -->
+        <nav class="max-w-7xl mx-auto mt-3 hidden md:flex justify-center space-x-2 border-t border-arcade-border/50 pt-2">
+            <button onclick="switchPage('home')" id="nav-home" class="nav-link px-4 py-2 rounded-lg text-xs font-arcade transition hover:text-arcade-brightRed text-arcade-brightRed">
+                <i class="fa-solid fa-house mr-1.5"></i>Home
+            </button>
+            <button onclick="switchPage('services')" id="nav-services" class="nav-link px-4 py-2 rounded-lg text-xs font-arcade transition hover:text-arcade-brightRed text-gray-400">
+                <i class="fa-solid fa-gamepad mr-1.5"></i>Services
+            </button>
+            <button onclick="switchPage('about')" id="nav-about" class="nav-link px-4 py-2 rounded-lg text-xs font-arcade transition hover:text-arcade-brightRed text-gray-400">
+                <i class="fa-solid fa-shield-halved mr-1.5"></i>About
+            </button>
+            <button onclick="switchPage('blog')" id="nav-blog" class="nav-link px-4 py-2 rounded-lg text-xs font-arcade transition hover:text-arcade-brightRed text-gray-400">
+                <i class="fa-solid fa-newspaper mr-1.5"></i>Blog Guide
+            </button>
+            <button onclick="switchPage('contact')" id="nav-contact" class="nav-link px-4 py-2 rounded-lg text-xs font-arcade transition hover:text-arcade-brightRed text-gray-400">
+                <i class="fa-solid fa-envelope mr-1.5"></i>Contact
+            </button>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="hidden md:hidden mt-3 pt-3 border-t border-arcade-border space-y-2 font-arcade text-xs">
+            <button onclick="switchPage('home'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded text-white hover:bg-arcade-red/20"><i class="fa-solid fa-house mr-2"></i>Home</button>
+            <button onclick="switchPage('services'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded text-gray-300 hover:bg-arcade-red/20"><i class="fa-solid fa-gamepad mr-2"></i>Services</button>
+            <button onclick="switchPage('about'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded text-gray-300 hover:bg-arcade-red/20"><i class="fa-solid fa-shield-halved mr-2"></i>About</button>
+            <button onclick="switchPage('blog'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded text-gray-300 hover:bg-arcade-red/20"><i class="fa-solid fa-newspaper mr-2"></i>Blog Guide</button>
+            <button onclick="switchPage('contact'); toggleMobileNav();" class="block w-full text-left px-3 py-2 rounded text-gray-300 hover:bg-arcade-red/20"><i class="fa-solid fa-envelope mr-2"></i>Contact</button>
+        </div>
+    </header>
+
+    <!-- Arcade Ticker Marquee Bar -->
+    <div class="bg-black/90 border-b border-arcade-red/30 py-1.5 overflow-hidden z-10 text-[11px] font-mono text-arcade-brightRed">
+        <div class="whitespace-nowrap flex space-x-12 animate-pulse">
+            <span><i class="fa-solid fa-bolt text-arcade-gold mr-1"></i> WELCOME TO APEX DECK STUDIO 2.0</span>
+            <span><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> 90s RETRO MOTION & SYNTH ENGINE ENABLED</span>
+            <span><i class="fa-solid fa-star text-arcade-gold mr-1"></i> INSERT COIN TO BOOST MULTIPLIER</span>
+            <span><i class="fa-solid fa-shield-halved text-arcade-cyan mr-1"></i> VERIFIED PACKAGE DOWNLOAD MIRRORS ONLINE</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow z-10 w-full">
+
+        <!-- ================= PAGE 1: HOME ================= -->
+        <section id="page-home" class="page-content space-y-12">
+            
+            <!-- Hero Section with 3D Tilt Card & 2D Motion Sprites -->
+            <div class="glass-panel rounded-3xl p-6 md:p-12 relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-10 border border-arcade-red/40">
+                
+                <div class="max-w-2xl space-y-6 z-10">
+                    <div class="inline-flex items-center space-x-2 bg-arcade-red/20 border border-arcade-red/50 px-3.5 py-1.5 rounded-full text-xs font-arcade text-arcade-brightRed">
+                        <span class="w-2.5 h-2.5 rounded-full bg-arcade-brightRed animate-ping"></span>
+                        <span class="animate-arcade-blink">READY PLAYER ONE</span>
+                    </div>
+
+                    <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                        Next-Gen Digital Gaming Meets <span class="text-transparent bg-clip-text bg-gradient-to-r from-arcade-brightRed via-arcade-neonPink to-arcade-gold">90s Arcade Motion</span>
+                    </h1>
+
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        Experience the ultimate fusion of sleek Apple-style glassmorphism UI paired with nostalgic 90s 2D arcade physics, synth audio synthesizers, low-latency strategy tools, and secure card gaming APK mirrors.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <button onclick="triggerCoinDrop(); playAudioEffect('start'); switchPage('services');" class="arcade-btn animate-pixel-bounce">
+                            <i class="fa-solid fa-play mr-2"></i>PRESS START
+                        </button>
+                        <button onclick="triggerCoinDrop(); playAudioEffect('coin');" class="px-6 py-3.5 rounded-xl bg-black/70 border border-arcade-red/50 text-xs font-arcade text-arcade-gold hover:bg-arcade-red/20 transition flex items-center space-x-2">
+                            <i class="fa-solid fa-coins text-sm"></i>
+                            <span>INSERT COIN (+100 PTS)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Interactive 3D Card Sprite with Floating 90s Game Elements -->
+                <div class="relative w-full lg:w-1/2 flex justify-center items-center py-6">
+                    
+                    <!-- Floating Sprite 1: 8-Bit Dice -->
+                    <div class="absolute -top-4 left-4 z-20 font-arcade text-3xl text-arcade-gold animate-float">
+                        <i class="fa-solid fa-dice-five drop-shadow-[0_0_12px_rgba(255,215,0,0.8)]"></i>
+                    </div>
+
+                    <!-- Floating Sprite 2: Star Coin -->
+                    <div class="absolute -bottom-2 right-6 z-20 font-arcade text-3xl text-arcade-cyan animate-pixel-bounce">
+                        <i class="fa-solid fa-star drop-shadow-[0_0_12px_rgba(0,240,255,0.8)]"></i>
+                    </div>
+
+                    <!-- Interactive 3D Glass Card Container -->
+                    <div id="heroCard" class="w-72 h-96 rounded-2xl glass-panel p-6 flex flex-col justify-between border-2 border-arcade-brightRed animate-float shadow-2xl relative cursor-pointer group transition-transform duration-200">
+                        <div class="flex justify-between items-center font-arcade text-arcade-brightRed">
+                            <span class="text-2xl">A</span>
+                            <i class="fa-solid fa-spade text-3xl"></i>
+                        </div>
+
+                        <div class="text-center space-y-3">
+                            <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-tr from-arcade-red via-arcade-darkRed to-black flex items-center justify-center border-2 border-arcade-gold text-white text-4xl font-arcade shadow-xl group-hover:scale-110 transition duration-300">
+                                ♠
+                            </div>
+                            <p class="text-xs font-arcade text-arcade-gold tracking-widest">APEX ACE</p>
+                        </div>
+
+                        <div class="flex justify-between items-center font-arcade text-arcade-brightRed rotate-180">
+                            <span class="text-2xl">A</span>
+                            <i class="fa-solid fa-spade text-3xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Arcade Health / HP Metric Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-6 rounded-2xl glass-panel-hover space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-arcade text-xs text-arcade-brightRed"><i class="fa-solid fa-bolt mr-2"></i>ENGINE SPEED</h3>
+                        <span class="text-xs font-mono text-emerald-400">60 FPS / 99%</span>
+                    </div>
+                    <div class="w-full bg-black/80 h-4 rounded-sm p-0.5 border border-arcade-red/40">
+                        <div class="bg-gradient-to-r from-arcade-red to-emerald-400 h-full w-[98%] rounded-xs"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Optimized low-overhead rendering engine delivering instant table updates and 90s-style tactile feedback.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl glass-panel-hover space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-arcade text-xs text-arcade-gold"><i class="fa-solid fa-shield-halved mr-2"></i>SECURITY SHIELD</h3>
+                        <span class="text-xs font-mono text-arcade-gold">MAX PROTECTION</span>
+                    </div>
+                    <div class="w-full bg-black/80 h-4 rounded-sm p-0.5 border border-arcade-red/40">
+                        <div class="bg-gradient-to-r from-arcade-red to-arcade-gold h-full w-[100%] rounded-xs"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Comprehensive checksum verification and anti-tamper security routines across all mobile APK mirror packages.
+                    </p>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl glass-panel-hover space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-arcade text-xs text-arcade-cyan"><i class="fa-solid fa-users mr-2"></i>COMMUNITY MULTI</h3>
+                        <span class="text-xs font-mono text-arcade-cyan">85,000+ PLAYERS</span>
+                    </div>
+                    <div class="w-full bg-black/80 h-4 rounded-sm p-0.5 border border-arcade-red/40">
+                        <div class="bg-gradient-to-r from-arcade-red to-arcade-cyan h-full w-[90%] rounded-xs"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Thriving global community competing in synchronized real-time multi-table card tournaments daily.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Gaming Visual Modules -->
+            <div class="glass-panel rounded-3xl p-6 md:p-8 space-y-6">
+                <h2 class="font-arcade text-sm text-arcade-brightRed tracking-wider flex items-center">
+                    <i class="fa-solid fa-layer-group mr-2"></i>FEATURED MODULES
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="rounded-2xl overflow-hidden glass-panel border border-arcade-border group glass-panel-hover">
+                        <img src="https://images.unsplash.com/photo-1511193311914-0346f16efe90?auto=format&fit=crop&w=800&q=80" alt="Card Game Table" class="w-full h-48 object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/800x480/120408/ff1744?text=Card+Studio+Table'">
+                        <div class="p-5 space-y-2">
+                            <h4 class="font-bold text-white text-base">Multi-Table Engine</h4>
+                            <p class="text-xs text-gray-400 leading-relaxed">Simultaneous table monitoring with customized card deck skins and quick actions.</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl overflow-hidden glass-panel border border-arcade-border group glass-panel-hover">
+                        <img src="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=800&q=80" alt="Arcade Cabinet" class="w-full h-48 object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/800x480/120408/ff1744?text=Arcade+Cabinet'">
+                        <div class="p-5 space-y-2">
+                            <h4 class="font-bold text-white text-base">90s Arcade Physics</h4>
+                            <p class="text-xs text-gray-400 leading-relaxed">Tactile sound synthesizers, screen rumble, and pixel-perfect animations built into the UI.</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl overflow-hidden glass-panel border border-arcade-border group glass-panel-hover">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80" alt="Digital Gaming Mobile" class="w-full h-48 object-cover group-hover:scale-105 transition duration-500" onerror="this.src='https://placehold.co/800x480/120408/ff1744?text=Mobile+APK+Hub'">
+                        <div class="p-5 space-y-2">
+                            <h4 class="font-bold text-white text-base">Verified Package Mirrors</h4>
+                            <p class="text-xs text-gray-400 leading-relaxed">High-speed verified download channels for strategic mobile card game setups.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= PAGE 2: SERVICES ================= -->
+        <section id="page-services" class="page-content hidden space-y-8">
+            <div class="glass-panel p-8 rounded-3xl border border-arcade-red/30 space-y-4">
+                <span class="font-arcade text-xs text-arcade-gold"><i class="fa-solid fa-wrench mr-2"></i>ARCADE CAPABILITIES</span>
+                <h1 class="text-2xl md:text-4xl font-extrabold text-white">Apex Deck Studio Services</h1>
+                <p class="text-gray-300 text-sm max-w-3xl leading-relaxed">
+                    Explore our suite of client performance tools, security audit frameworks, mobile APK verification channels, and custom 90s retro UI integration modules.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-6 rounded-2xl border border-arcade-border glass-panel-hover space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-arcade-red/20 border border-arcade-red flex items-center justify-center text-arcade-brightRed text-xl font-arcade">
+                        <i class="fa-solid fa-download"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Verified APK Mirror Channels</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        We maintain clean, high-speed download mirrors for popular strategic card game packages. Every file is scanned against malware signatures and hash-verified for full client integrity.
+                    </p>
+                    <button onclick="switchPage('blog')" class="text-xs font-arcade text-arcade-brightRed hover:underline flex items-center">
+                        READ INSTALL GUIDES <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-arcade-border glass-panel-hover space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-arcade-red/20 border border-arcade-red flex items-center justify-center text-arcade-brightRed text-xl font-arcade">
+                        <i class="fa-solid fa-microchip"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">Low-Latency Network Optimization</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        Lightweight WebSocket routing and automated packet optimization designed to keep multiplayer card rounds completely lag-free across 3G, 4G, and variable mobile networks.
+                    </p>
+                    <button onclick="switchPage('contact')" class="text-xs font-arcade text-arcade-brightRed hover:underline flex items-center">
+                        REQUEST BENCHMARK <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-arcade-border glass-panel-hover space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-arcade-red/20 border border-arcade-red flex items-center justify-center text-arcade-brightRed text-xl font-arcade">
+                        <i class="fa-solid fa-shield-cat"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">RNG & Fair Play Auditing</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        Our security analysts inspect card distribution algorithms to guarantee mathematically random deck shuffling, ensuring authentic and competitive gameplay environment for all players.
+                    </p>
+                    <button onclick="switchPage('about')" class="text-xs font-arcade text-arcade-brightRed hover:underline flex items-center">
+                        VIEW AUDIT SPECS <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+
+                <div class="glass-panel p-6 rounded-2xl border border-arcade-border glass-panel-hover space-y-4">
+                    <div class="w-12 h-12 rounded-xl bg-arcade-red/20 border border-arcade-red flex items-center justify-center text-arcade-brightRed text-xl font-arcade">
+                        <i class="fa-solid fa-gamepad"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white">90s Web Audio & Motion FX Integration</h3>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        Elevate modern web apps with custom Web Audio synth chime generators, CRT raster scanlines, pixel particle physics canvas, and retro haptic button responses.
+                    </p>
+                    <button onclick="playAudioEffect('powerup')" class="text-xs font-arcade text-arcade-gold hover:underline flex items-center">
+                        TEST SYNTH POWERUP <i class="fa-solid fa-bolt ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: ABOUT ================= -->
+        <section id="page-about" class="page-content hidden space-y-8">
+            <div class="glass-panel p-8 rounded-3xl border border-arcade-red/30 space-y-6">
+                <span class="font-arcade text-xs text-arcade-brightRed"><i class="fa-solid fa-building-user mr-2"></i>OUR LEGACY</span>
+                <h1 class="text-2xl md:text-4xl font-extrabold text-white">About Apex Deck Studio</h1>
+                <p class="text-gray-300 text-sm leading-relaxed max-w-3xl">
+                    Founded by passionate digital card strategists and retro arcade software engineers, Apex Deck Studio merges modern Apple-inspired design precision with the raw nostalgia and tactile feedback of 90s gaming arcades.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4 glass-panel p-6 rounded-2xl">
+                    <h3 class="font-arcade text-xs text-arcade-gold"><i class="fa-solid fa-bullseye mr-2"></i>MISSION STATEMENT</h3>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Our goal is to build secure, transparent, and ultra-responsive digital card platform tools. We empower players with verified download links, strategic hand analysis, and seamless client performance across all mobile hardware generations.
+                    </p>
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-center space-x-3 text-xs text-gray-300">
+                            <i class="fa-solid fa-circle-check text-emerald-400 font-arcade"></i>
+                            <span>Zero intrusive popup malware or unverified mirror links</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-xs text-gray-300">
+                            <i class="fa-solid fa-circle-check text-emerald-400 font-arcade"></i>
+                            <span>Dedicated performance testing for low-RAM devices</span>
+                        </div>
+                        <div class="flex items-center space-x-3 text-xs text-gray-300">
+                            <i class="fa-solid fa-circle-check text-emerald-400 font-arcade"></i>
+                            <span>Retro arcade UI innovation and Web Audio integration</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl overflow-hidden glass-panel border border-arcade-red/40">
+                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80" alt="Retro Arcade Studio" class="w-full h-72 object-cover" onerror="this.src='https://placehold.co/800x480/120408/ff1744?text=Arcade+Studio+Hub'">
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: BLOG ================= -->
+        <section id="page-blog" class="page-content hidden space-y-8">
+            <div class="glass-panel p-6 md:p-10 rounded-3xl border border-arcade-red/30 space-y-8 max-w-5xl mx-auto">
+                
+                <!-- Blog Header -->
+                <div class="border-b border-arcade-border/80 pb-6 space-y-4">
+                    <div class="flex items-center space-x-3 text-xs font-arcade text-arcade-gold">
+                        <span><i class="fa-solid fa-book-open mr-1"></i> STRATEGY GUIDE</span>
+                        <span>•</span>
+                        <span class="text-gray-400 font-mono">1,200+ WORDS DETAILED ARTICLE</span>
+                    </div>
+                    
+                    <!-- Main Headline (H1 Style) -->
+                    <h1 class="text-2xl md:text-4xl font-extrabold text-white leading-tight">
+                        Comprehensive Guide to Mobile Card Gaming Mechanics, Platform Optimization, and Strategic Mastery
+                    </h1>
+                    
+                    <div class="flex items-center space-x-4 text-xs text-gray-400 font-mono">
+                        <span>By Apex Studio Editorial</span>
+                        <span>|</span>
+                        <span>Updated October 2026</span>
+                    </div>
+                </div>
+
+                <!-- Blog Banner Image -->
+                <div class="rounded-2xl overflow-hidden border border-arcade-border">
+                    <img src="https://images.unsplash.com/photo-1541278107931-e006523892df?auto=format&fit=crop&w=1200&q=80" alt="Card Gaming Strategy Table" class="w-full h-64 md:h-80 object-cover" onerror="this.src='https://placehold.co/1200x500/120408/ff1744?text=Card+Strategy+Guide'">
+                </div>
+
+                <!-- Blog Article Body -->
+                <div class="space-y-8 text-gray-300 text-sm md:text-base leading-relaxed font-sans">
+                    
+                    <!-- Major Section 1 (H2 Style) -->
+                    <div class="space-y-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-white border-l-4 border-arcade-red pl-3">
+                            The Evolution of Mobile Card Gaming Architectures and Digital Platforms
+                        </h2>
+                        <p>
+                            Digital card gaming has undergone a massive transformation over the past decade. What once began as simple single-player computer applications has now matured into a high-octane, real-time multiplayer ecosystem powered by global server networks, low-latency WebSocket protocols, and sleek client user interfaces. Modern players demand zero delay during card dealing, complete data privacy, and mathematically verified random number generation (RNG).
+                        </p>
+                        <p>
+                            When entering fast-paced multiplayer card rooms, acquiring the verified and authentic application package is essential to protect user data and ensure maximum frame rates. For players looking for verified access to high-performance card platforms, securing a safe <a href="https://officialallyonogames.com/new-dhani-teen-patti/" target="_blank" rel="noopener" class="text-arcade-brightRed font-semibold underline hover:text-arcade-gold transition duration-200">Dhani Teen Patti Download</a> ensures that you receive the genuine package equipped with modern SSL security layers, bug fixes, and full multi-table compatibility.
+                        </p>
+                        <p>
+                            By utilizing official mirror channels, gamers eliminate the risk of corrupted installers or unauthorized third-party modifications. Furthermore, verified client packages ensure optimal memory management on mobile devices, preventing thermal throttling during extended gameplay sessions.
+                        </p>
+                    </div>
+
+                    <!-- Subsection 1.1 (H3 Style) -->
+                    <div class="space-y-3 bg-black/50 p-5 rounded-2xl border border-arcade-border">
+                        <h3 class="text-lg font-semibold text-arcade-brightRed">
+                            Key Network Protocols Governing Smooth Table Synchronization
+                        </h3>
+                        <p>
+                            Card game client responsiveness relies on how efficiently network packets travel between mobile hardware and regional data servers. Latency spikes exceeding 150 milliseconds can cause delayed card turns or timeout penalties. To keep connection metrics optimal:
+                        </p>
+                        <ul class="list-disc pl-6 space-y-2 text-xs md:text-sm text-gray-300">
+                            <li>Always connect through high-speed Wi-Fi or stable 4G/5G cellular bands.</li>
+                            <li>Ensure background data syncing is restricted for bandwidth-heavy social apps while playing.</li>
+                            <li>Verify that your mobile device battery saver mode does not throttle central processor clock speeds during live gaming loops.</li>
+                        </ul>
+                    </div>
+
+                    <!-- Major Section 2 (H2 Style) -->
+                    <div class="space-y-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-white border-l-4 border-arcade-red pl-3">
+                            Strategic Principles for Mastering Three-Card Hand Mechanics
+                        </h2>
+                        <p>
+                            While card distribution in digital environments is strictly governed by certified Random Number Generators (RNG), strategic discipline remains the ultimate differentiator between novice players and seasoned table veterans. Understanding hand probabilities, opponent behavioral patterns, and chip bankroll preservation forms the bedrock of long-term success.
+                        </p>
+                        <p>
+                            In traditional three-card setups, hand rankings progress logically from high card combinations, pairs, and flushes up to straight runs and trio hands. Mastering these hand values allows players to quickly evaluate their relative table strength within milliseconds of receiving their initial dealing.
+                        </p>
+
+                        <!-- Subsection 2.1 (H3 Style) -->
+                        <div class="space-y-3">
+                            <h3 class="text-lg font-semibold text-arcade-brightRed">
+                                Bankroll Preservation and Systematic Risk Management
+                            </h3>
+                            <p>
+                                Systematic bankroll management prevents emotional decision-making following unexpected hand losses. Experienced strategists recommend allocating no more than 2% to 5% of your total game balance to any single hand or round. This conservative threshold allows players to withstand natural statistical variance without exhausting their balance prematurely.
+                            </p>
+                        </div>
+
+                        <!-- Subsection 2.2 (H3 Style) -->
+                        <div class="space-y-3">
+                            <h3 class="text-lg font-semibold text-arcade-brightRed">
+                                Reading Table Signals and Strategic Blind Play
+                            </h3>
+                            <p>
+                                Strategic variation keeps opponents off-balance. Utilizing blind bets during early game rounds can put pressure on players with marginal starting hands, forcing them to fold early before seeing community cards or showdown stages. However, blind play must be balanced with strict fold triggers when confronting persistent raises from tight opponents.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Major Section 3 (H2 Style) -->
+                    <div class="space-y-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-white border-l-4 border-arcade-red pl-3">
+                            Ensuring Client Integrity, Security, and Fair Play Standards
+                        </h2>
+                        <p>
+                            Digital trust is the foundation of modern online card rooms. Leading mobile platforms employ 256-bit SSL transport layer security alongside hardware-based RNG certification from independent auditing laboratories. These measures ensure every deck shuffle is completely random and immune to external interference or manipulation.
+                        </p>
+                        <p>
+                            Additionally, players should routinely verify their installed client build against official developer updates. Outdated versions may lack critical security patches, leaving users vulnerable to connection drops or compatibility glitches on updated operating systems.
+                        </p>
+                    </div>
+
+                    <!-- Conclusion Section -->
+                    <div class="space-y-4 bg-arcade-red/10 p-6 rounded-2xl border border-arcade-red/30">
+                        <h2 class="text-xl font-bold text-white flex items-center">
+                            <i class="fa-solid fa-flag-checkered mr-2 text-arcade-red"></i>Conclusion
+                        </h2>
+                        <p>
+                            Mobile card gaming represents a perfect fusion of strategic depth, statistical probability, and technical software engineering. By downloading verified packages from legitimate sources, practicing disciplined bankroll preservation, and continuously analyzing table mechanics, players can enjoy a safe, rewarding, and exhilarating gaming experience.
+                        </p>
+                    </div>
+
+                    <!-- FNP / FAQ Section -->
+                    <div class="space-y-6 pt-4 border-t border-arcade-border">
+                        <h2 class="text-xl font-bold text-white flex items-center font-arcade text-xs text-arcade-gold">
+                            <i class="fa-solid fa-circle-question mr-2"></i>FNP (Frequently Noted Points)
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-black/60 p-4 rounded-xl border border-arcade-border space-y-2">
+                                <h3 class="text-sm font-semibold text-white">Q1: How do I ensure my mobile card game installer package is completely safe?</h3>
+                                <p class="text-xs text-gray-300">
+                                    Always obtain software from official developer mirrors or verified platform links. Check file hash checksums when possible and avoid third-party modified packages.
+                                </p>
+                            </div>
+
+                            <div class="bg-black/60 p-4 rounded-xl border border-arcade-border space-y-2">
+                                <h3 class="text-sm font-semibold text-white">Q2: What are the minimum system requirements for low-latency gaming?</h3>
+                                <p class="text-xs text-gray-300">
+                                    Most modern card game clients require at least Android 6.0 or iOS 11.0, 2GB of system RAM, and a stable 3G/4G or Wi-Fi network connection.
+                                </p>
+                            </div>
+
+                            <div class="bg-black/60 p-4 rounded-xl border border-arcade-border space-y-2">
+                                <h3 class="text-sm font-semibold text-white">Q3: Are online card dealing mechanics certified for mathematical fairness?</h3>
+                                <p class="text-xs text-gray-300">
+                                    Yes, certified gaming clients utilize hardware-based Pseudo-Random Number Generators (PRNG) audited by accredited third-party testing labs to guarantee unbiased card shuffles.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 5: CONTACT ================= -->
+        <section id="page-contact" class="page-content hidden space-y-8">
+            <div class="glass-panel p-8 rounded-3xl border border-arcade-red/30 space-y-4 max-w-2xl mx-auto">
+                <span class="font-arcade text-xs text-arcade-gold"><i class="fa-solid fa-paper-plane mr-2"></i>ARCADE CONSOLE</span>
+                <h1 class="text-2xl md:text-3xl font-extrabold text-white">Contact Apex Studio Team</h1>
+                <p class="text-xs md:text-sm text-gray-300 leading-relaxed">
+                    Have a technical inquiry, APK mirror feedback, or studio partnership request? Submit your message directly to our arcade operator desk using the contact form below.
+                </p>
+
+                <!-- Clean Intake Form (Hiding Public Admin Contact Details as requested) -->
+                <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-4 pt-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-arcade text-gray-300 block">PLAYER NAME</label>
+                        <input type="text" required placeholder="Enter your full name" class="w-full bg-black/70 border border-arcade-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-arcade-brightRed transition">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-arcade text-gray-300 block">EMAIL ADDRESS</label>
+                            <input type="email" required placeholder="name@domain.com" class="w-full bg-black/70 border border-arcade-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-arcade-brightRed transition">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-arcade text-gray-300 block">PHONE NUMBER</label>
+                            <input type="tel" required placeholder="+1 (555) 000-0000" class="w-full bg-black/70 border border-arcade-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-arcade-brightRed transition">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-arcade text-gray-300 block">YOUR MESSAGE</label>
+                        <textarea rows="4" required placeholder="Type your message or technical inquiry here..." class="w-full bg-black/70 border border-arcade-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-arcade-brightRed transition"></textarea>
+                    </div>
+
+                    <button type="submit" class="arcade-btn w-full mt-2">
+                        <i class="fa-solid fa-paper-plane mr-2"></i>TRANSMIT MESSAGE
+                    </button>
+                </form>
+
+                <!-- Feedback Message Banner -->
+                <div id="formResponse" class="hidden p-4 rounded-xl bg-emerald-950/90 border border-emerald-500 text-emerald-300 text-xs font-arcade text-center">
+                    <i class="fa-solid fa-circle-check text-base mr-2"></i>
+                    MESSAGE TRANSMITTED TO OPERATOR CONSOLE! WE WILL RESPOND SHORTLY.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-arcade-border/80 py-6 px-4 z-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+            <div class="flex items-center space-x-2 font-arcade text-arcade-brightRed">
+                <span>♠ APEX DECK STUDIO</span>
+                <span class="text-gray-600">|</span>
+                <span class="text-gray-400 font-sans">90s Arcade Motion & Web 2.0 Portal</span>
+            </div>
+            <div>
+                © 2026 Apex Deck Studio. All Rights Reserved. Clean & Safe Platform.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT: Page Switching, Web Audio API Synthesizer, 3D Tilt, Particle Explosions -->
+    <script>
+        // Tab Page Switching Engine
+        function switchPage(pageId) {
+            playAudioEffect('beep');
+            triggerScreenShake();
+
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.add('hidden'));
+
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update Active Navigation Button Styling
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('text-arcade-brightRed');
+                link.classList.add('text-gray-400');
+            });
+
+            const activeNav = document.getElementById('nav-' + pageId);
+            if (activeNav) {
+                activeNav.classList.add('text-arcade-brightRed');
+                activeNav.classList.remove('text-gray-400');
+            }
+        }
+
+        function toggleMobileNav() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // CRT Scanlines Effect Toggle
+        function toggleCRT() {
+            playAudioEffect('beep');
+            document.body.classList.toggle('crt-active');
+        }
+
+        // Screen Shake Motion Effect
+        function triggerScreenShake() {
+            document.body.classList.add('screen-shake');
+            setTimeout(() => {
+                document.body.classList.remove('screen-shake');
+            }, 300);
+        }
+
+        // Web Audio API Retro Sound Synthesizer Engine
+        let sfxEnabled = true;
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function toggleSFX() {
+            sfxEnabled = !sfxEnabled;
+            const btn = document.getElementById('sfxBtn');
+            const icon = document.getElementById('sfxIcon');
+            if (sfxEnabled) {
+                btn.querySelector('span').innerText = "SFX ON";
+                icon.className = "fa-solid fa-volume-high text-arcade-brightRed";
+                playAudioEffect('coin');
+            } else {
+                btn.querySelector('span').innerText = "SFX OFF";
+                icon.className = "fa-solid fa-volume-xmark text-gray-500";
+            }
+        }
+
+        function playAudioEffect(type) {
+            if (!sfxEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'beep') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.06);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.06);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.06);
+                } else if (type === 'coin') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(987.77, now); // B5
+                    osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.28);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (type === 'powerup') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.linearRampToValueAtTime(880, now + 0.25);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'start') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(330, now);
+                    osc.frequency.setValueAtTime(440, now + 0.1);
+                    osc.frequency.setValueAtTime(660, now + 0.2);
+                    osc.frequency.setValueAtTime(880, now + 0.3);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.45);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.45);
+                }
+            } catch (e) {
+                console.log("Audio play blocked.");
+            }
+        }
+
+        // Score & Coin Counter Interaction
+        let currentScore = 128950;
+        function triggerCoinDrop() {
+            currentScore += 100;
+            document.getElementById('hudScore').innerText = currentScore.toString().padStart(6, '0');
+        }
+
+        // Interactive Form Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            playAudioEffect('start');
+            triggerScreenShake();
+
+            const form = document.getElementById('contactForm');
+            const res = document.getElementById('formResponse');
+
+            form.reset();
+            res.classList.remove('hidden');
+
+            setTimeout(() => {
+                res.classList.add('hidden');
+            }, 5000);
+        }
+
+        // 3D Tilt Motion Effect for Hero Card
+        const heroCard = document.getElementById('heroCard');
+        if (heroCard) {
+            heroCard.addEventListener('mousemove', (e) => {
+                const rect = heroCard.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                heroCard.style.transform = `rotateY(${x / 12}deg) rotateX(${-y / 12}deg) translateY(-8px)`;
+            });
+
+            heroCard.addEventListener('mouseleave', () => {
+                heroCard.style.transform = `rotateY(0deg) rotateX(0deg) translateY(0px)`;
+            });
+        }
+
+        // 90s Cyberpunk Grid & Mouse Particle Canvas Physics
+        const canvas = document.getElementById('arcadeCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = -1000;
+        let mouseY = -1000;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Spawn pixel burst particles on cursor move
+            if (Math.random() > 0.6) {
+                particles.push(new PixelBurst(mouseX, mouseY));
+            }
+        });
+
+        class PixelBurst {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.floor(Math.random() * 4) + 2;
+                this.vx = (Math.random() - 0.5) * 3;
+                this.vy = (Math.random() - 0.5) * 3;
+                this.life = 1.0;
+                this.color = Math.random() > 0.5 ? '#ff1744' : '#ffd700';
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= 0.02;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        function renderCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw synthwave grid horizon
+            ctx.strokeStyle = "rgba(255, 23, 68, 0.08)";
+            ctx.lineWidth = 1;
+
+            const gridStep = 40;
+            for (let x = 0; x < canvas.width; x += gridStep) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            for (let y = 0; y < canvas.height; y += gridStep) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Update particle explosions
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+
+            requestAnimationFrame(renderCanvas);
+        }
+
+        window.onload = function() {
+            renderCanvas();
+        };
+    </script>
+</body>
+</html>
